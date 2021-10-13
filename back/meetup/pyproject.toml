@@ -6,9 +6,15 @@ authors = ["AlexandreBiguet <alexandre.biguet@easyence.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+fastapi = "^0.70.0"
+pydantic = "^1.8.2"
+uvicorn = "^0.15.0"
+requests = "^2.26.0"
+typer = "^0.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+black = "^21.9b0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
