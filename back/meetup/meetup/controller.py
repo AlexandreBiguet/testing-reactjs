@@ -1,10 +1,18 @@
 import uuid
 from typing import Dict, List
 
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+
 from meetup import models
+
+
+from fastapi.param_functions import Body
+
 
 app = FastAPI(title="meetup service", version="0.1.0")
 
@@ -19,6 +27,14 @@ app.add_middleware(
 )
 
 _meetups: Dict[uuid.UUID, models.Meetup] = {}
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+    )
 
 
 @v1.get("/meetup/{id}")

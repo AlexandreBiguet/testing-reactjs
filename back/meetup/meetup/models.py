@@ -6,4 +6,3 @@ class Meetup(BaseModel):
     image: HttpUrl
     address: str
     description: str
-
