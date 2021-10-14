@@ -38,13 +38,13 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 
 @v1.get("/meetup/{id}")
-def get_meetup(id: uuid.UUID) -> models.Meetup:
+async def get_meetup(id: uuid.UUID) -> models.Meetup:
     global _meetups
     return _meetups[id]
 
 
 @v1.post("/meetup")
-def post_meetup(meetup: models.Meetup) -> uuid.UUID:
+async def post_meetup(meetup: models.Meetup) -> uuid.UUID:
     uid = uuid.uuid4()
     _meetups[uid] = meetup
     return uid
