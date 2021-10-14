@@ -2,38 +2,26 @@ import { useHistory } from "react-router";
 
 import NewMeetupForm from "../components/meetup/NewMeetupForm";
 
+import axios from "axios";
+
 function NewMeetupPage() {
   const history = useHistory();
 
   function addMeetupHandler(newMeetup) {
-    // could use axios
-
-    console.log(newMeetup);
-
-    fetch("http://localhost:8080/v1/meetup", {
-      method: "POST",
-      body: JSON.stringify({
-        title: "s",
-        image: "http://www.coucou.fr",
-        address: "s",
-        description: "s",
-      }),
-      header: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
+    axios.post("http://localhost:8080/v1/meetup", newMeetup).then(
+      (response) => {
+        if (response.status === 200) {
           history.replace("/");
         } else {
           console.error(
             "something wrong: " + response.status + " : " + response.statusText
           );
         }
-      })
-      .catch((error) => {
+      },
+      (error) => {
         console.error("POST failed: " + error.message);
-      });
+      }
+    );
   }
 
   return (
