@@ -1,31 +1,51 @@
+import { useState, useEffect } from "react";
+
+import axios from "axios";
+
 import MeetupList from "../components/meetup/MeetupList";
 
-const DUMMY_DATA = [
-  {
-    id: "m1",
-    title: "This is a first meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/2560px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Meetupstreet 5, 12345 Meetup City",
-    description:
-      "This is a first, amazing meetup which you definitely should not miss. It will be a lot of fun!",
-  },
-  {
-    id: "m2",
-    title: "This is a second meetup",
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/2560px-Stadtbild_M%C3%BCnchen.jpg",
-    address: "Meetupstreet 5, 12345 Meetup City",
-    description:
-      "This is a first, amazing meetup which you definitely should not miss. It will be a lot of fun!",
-  },
-];
+// https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Stadtbild_M%C3%BCnchen.jpg/2560px-Stadtbild_M%C3%BCnchen.jpg
 
 function AllMeetupsPage() {
+  const [isLoading, setIsLoading] = useState();
+  const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+  function getAllMeetups() {
+    setIsLoading(true);
+    axios
+      .get("http://localhost:8080/v1/meetups")
+      .then((response) => {
+        return response.data;
+      })
+      .then((data) => {
+        const meetups = [];
+        for (const key in data) {
+          const meetup = {
+            id: key,
+            ...data[key],
+          };
+          meetups.push(meetup);
+        }
+        setIsLoading(false);
+        setLoadedMeetups(meetups);
+      });
+  }
+
+  useEffect(getAllMeetups, []);
+
+  if (isLoading) {
+    return (
+      <section>
+        {" "}
+        <p> Loading ... </p>
+      </section>
+    );
+  }
+
   return (
     <section>
       <h1> All Meetups Page</h1>
-      <MeetupList meetups={DUMMY_DATA} />
+      <MeetupList meetups={loadedMeetups} />
     </section>
   );
 }
